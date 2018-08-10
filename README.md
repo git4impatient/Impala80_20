@@ -15,3 +15,6 @@ Four simple steps to get great Impala performance
 This github has a data generator and sample code.  It also includes analysis of how to see the impact of the above steps
 
 (c) Copyright 2018 Martin Lurie, sample code, not supported
+
+todo: add partitioning example, clean up the queries file, add screenshots of query tree showing difference in rows broadcast, partition elimiation etc
+
