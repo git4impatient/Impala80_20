@@ -1,0 +1,68 @@
+[marty@gromit statsParquetPartition]$  impala-shell -i $DATANODE 
+Starting Impala Shell without Kerberos authentication
+Connected to gromit.lurie.biz:21000
+Server version: impalad version 2.12.0-cdh5.15.0 RELEASE (build 23f574543323301846b41fa5433690df32efe085)
+***********************************************************************************
+Welcome to the Impala shell.
+(Impala Shell v2.12.0-cdh5.15.0 (23f5745) built on Thu May 24 04:07:31 PDT 2018)
+
+Want to know what version of Impala you're connected to? Run the VERSION command to
+find out!
+***********************************************************************************
+[gromit.lurie.biz:21000] > explain select myonein10k from partitionparquet where mydayofyear=365 limit 5;
+Query: explain select myonein10k from partitionparquet where mydayofyear=365 limit 5
++------------------------------------------------------------------------------------+
+| Explain String                                                                     |
++------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=0B                                       |
+| Per-Host Resource Estimates: Memory=32.00MB                                        |
+| WARNING: The following tables are missing relevant table and/or column statistics. |
+| default.partitionparquet                                                           |
+|                                                                                    |
+| PLAN-ROOT SINK                                                                     |
+| |                                                                                  |
+| 01:EXCHANGE [UNPARTITIONED]                                                        |
+| |  limit: 5                                                                        |
+| |                                                                                  |
+| 00:SCAN HDFS [default.partitionparquet]                                            |
+|    partitions=84/84 files=84 size=8.17MB                                           |
+|    predicates: mydayofyear = 365                                                   |
+|    limit: 5                                                                        |
++------------------------------------------------------------------------------------+
+Fetched 14 row(s) in 0.03s
+[gromit.lurie.biz:21000] > explain select myonein10k from partitionparquet where myweekday=3 limit 5;
+Query: explain select myonein10k from partitionparquet where myweekday=3 limit 5
++------------------------------------------------------------------------------------+
+| Explain String                                                                     |
++------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=0B                                       |
+| Per-Host Resource Estimates: Memory=16.00MB                                        |
+| Codegen disabled by planner                                                        |
+| WARNING: The following tables are missing relevant table and/or column statistics. |
+| default.partitionparquet                                                           |
+|                                                                                    |
+| PLAN-ROOT SINK                                                                     |
+| |                                                                                  |
+| 00:SCAN HDFS [default.partitionparquet]                                            |
+|    partitions=12/84 files=12 size=1.17MB                                           |
+|    limit: 5                                                                        |
++------------------------------------------------------------------------------------+
+Fetched 11 row(s) in 0.01s
+[gromit.lurie.biz:21000] > explain select myonein10k from partitionparquet where mymonth=5 and myweekday=3 limit 5;
+Query: explain select myonein10k from partitionparquet where mymonth=5 and myweekday=3 limit 5
++------------------------------------------------------------------------------------+
+| Explain String                                                                     |
++------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=0B                                       |
+| Per-Host Resource Estimates: Memory=16.00MB                                        |
+| Codegen disabled by planner                                                        |
+| WARNING: The following tables are missing relevant table and/or column statistics. |
+| default.partitionparquet                                                           |
+|                                                                                    |
+| PLAN-ROOT SINK                                                                     |
+| |                                                                                  |
+| 00:SCAN HDFS [default.partitionparquet]                                            |
+|    partitions=1/84 files=1 size=99.59KB                                            |
+|    limit: 5                                                                        |
++------------------------------------------------------------------------------------+
+Fetched 11 row(s) in 0.01s
