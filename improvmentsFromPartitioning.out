@@ -66,3 +66,33 @@ Query: explain select myonein10k from partitionparquet where mymonth=5 and mywee
 |    limit: 5                                                                        |
 +------------------------------------------------------------------------------------+
 Fetched 11 row(s) in 0.01s
+
+
+
+
+
+
+
+
+
+Sample directory structure:
+
+[marty@gromit ~]$  hadoop fs -ls -R /user/hive/warehouse/partitionparquet
+
+... lines deleted....
+
+drwxr-xr-x   - impala hive          0 2018-08-12 16:04 /user/hive/warehouse/partitionparquet/mymonth=8/myweekday=5
+-rw-r--r--   3 impala hive     101938 2018-08-12 16:04 /user/hive/warehouse/partitionparquet/mymonth=8/myweekday=5/7542477d2955a40b-c74624c600000000_2143280810_data.0.parq
+drwxr-xr-x   - impala hive          0 2018-08-12 16:04 /user/hive/warehouse/partitionparquet/mymonth=8/myweekday=6
+-rw-r--r--   3 impala hive     101977 2018-08-12 16:04 /user/hive/warehouse/partitionparquet/mymonth=8/myweekday=6/7542477d2955a40b-c74624c600000000_396942592_data.0.parq
+drwxr-xr-x   - impala hive          0 2018-08-12 16:04 /user/hive/warehouse/partitionparquet/mymonth=8/myweekday=7
+-rw-r--r--   3 impala hive     101977 2018-08-12 16:04 /user/hive/warehouse/partitionparquet/mymonth=8/myweekday=7/7542477d2955a40b-c74624c600000000_76907610_data.0.parq
+drwxr-xr-x   - impala hive          0 2018-08-12 16:04 /user/hive/warehouse/partitionparquet/mymonth=9
+drwxr-xr-x   - impala hive          0 2018-08-12 16:04 /user/hive/warehouse/partitionparquet/mymonth=9/myweekday=1
+-rw-r--r--   3 impala hive     101977 2018-08-12 16:04 /user/hive/warehouse/partitionparquet/mymonth=9/myweekday=1/7542477d2955a40b-c74624c600000000_839998333_data.0.parq
+drwxr-xr-x   - impala hive          0 2018-08-12 16:04 /user/hive/warehouse/partitionparquet/mymonth=9/myweekday=2
+-rw-r--r--   3 impala hive     101977 2018-08-12 16:04 /user/hive/warehouse/partitionparquet/mymonth=9/myweekday=2/7542477d2955a40b-c74624c600000000_1718551971_data.0.parq
+drwxr-xr-x   - impala hive          0 2018-08-12 16:04 /user/hive/warehouse/partitionparquet/mymonth=9/myweekday=3
+-rw-r--r--   3 impala hive     101977 2018-08-12 16:04 /user/hive/warehouse/partitionparquet/mymonth=9/myweekday=3/7542477d2955a40b-c74624c600000000_91939897_data.0.parq
+drwxr-xr-x   - impala hive          0 2018-08-12 16:04 /user/hive/warehouse/partitionparquet/mymonth=9/myweekday=4
+
