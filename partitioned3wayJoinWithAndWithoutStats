@@ -102,3 +102,37 @@ Query: explain select a.myweekday, count(*) from partitionparquet a, partitionpa
 |    runtime filters: RF000 -> c.myrowid           |
 +--------------------------------------------------+
 Fetched 40 row(s) in 0.06s
+
+NO STATS:
+
+Operator          #Hosts   Avg Time   Max Time  #Rows  Est. #Rows   Peak Mem  Est. Peak Mem  Detail                     
+------------------------------------------------------------------------------------------------------------------------
+10:EXCHANGE            1   20.771us   20.771us      7           7   64.00 KB              0  UNPARTITIONED              
+09:AGGREGATE           1  915.407us  915.407us      7           7    1.96 MB       10.00 MB  FINALIZE                   
+08:EXCHANGE            1   19.044us   19.044us      7           7   64.00 KB              0  HASH(a.myweekday)          
+05:AGGREGATE           1   80.683us   80.683us      7           7    2.66 MB       10.00 MB  STREAMING                  
+04:HASH JOIN           1  566.198us  566.198us    100          -1   64.66 MB        2.00 GB  INNER JOIN, BROADCAST      
+|--07:EXCHANGE         1   10.662ms   10.662ms  1.00M          -1   12.72 MB              0  BROADCAST                  
+|  02:SCAN HDFS        1   26.823ms   26.823ms  1.00M          -1    1.45 MB       16.00 MB  default.partitionparquet c 
+03:HASH JOIN           1  115.352ms  115.352ms    100          -1   64.04 MB        2.00 GB  INNER JOIN, BROADCAST      
+|--06:EXCHANGE         1   15.626ms   15.626ms  1.00M          -1  480.00 KB              0  BROADCAST                  
+|  01:SCAN HDFS        1  527.684ms  527.684ms  1.00M          -1    1.66 MB       16.00 MB  default.partitionparquet b 
+00:SCAN HDFS           1   20.612ms   20.612ms    100          -1    1.63 MB       32.00 MB  default.partitionparquet a 
+
+
+WITH STATS - broadcast number of rows, number of rows in the hash-join pipeline is now 100 instead of 1 million
+
+Operator             #Hosts   Avg Time   Max Time  #Rows  Est. #Rows   Peak Mem  Est. Peak Mem  Detail                     
+---------------------------------------------------------------------------------------------------------------------------
+10:EXCHANGE               1   16.042us   16.042us      7           7   64.00 KB              0  UNPARTITIONED              
+09:AGGREGATE              1  589.659us  589.659us      7           7    1.96 MB       10.00 MB  FINALIZE                   
+08:EXCHANGE               1   12.484us   12.484us      7           7   64.00 KB              0  HASH(a.myweekday)          
+05:AGGREGATE              1    0.000ns    0.000ns      7           7    2.53 MB       10.00 MB  STREAMING                  
+04:HASH JOIN              1    1.168ms    1.168ms    100          97    1.99 MB        1.94 MB  INNER JOIN, BROADCAST      
+|--07:EXCHANGE            1    6.460us    6.460us    100          97   16.00 KB              0  BROADCAST                  
+|  03:HASH JOIN           1    1.426ms    1.426ms    100          97    1.98 MB        1.94 MB  INNER JOIN, BROADCAST      
+|  |--06:EXCHANGE         1   46.063us   46.063us    100          97  336.00 KB              0  BROADCAST                  
+|  |  00:SCAN HDFS        1   11.849ms   11.849ms    100          97  862.28 KB       32.00 MB  default.partitionparquet a 
+|  01:SCAN HDFS           1   19.002ms   19.002ms    100       1.00M    1.06 MB       16.00 MB  default.partitionparquet b 
+02:SCAN HDFS              1   13.094ms   13.094ms    100       1.00M    1.45 MB       16.00 MB  default.partitionparquet c 
+
