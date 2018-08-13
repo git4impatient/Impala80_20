@@ -1,0 +1,104 @@
+[gromit.lurie.biz:21000] > explain  select a.myweekday, count(*) from partitionparquet a, partitionparquet b, partitionparquet c where a.myrowid=b.myrowid and b.myrowid=c.myrowid and  a.myonein10k=500 group by a.myweekday;
+Query: explain select a.myweekday, count(*) from partitionparquet a, partitionparquet b, partitionparquet c where a.myrowid=b.myrowid and b.myrowid=c.myrowid and  a.myonein10k=500 group by a.myweekday
++------------------------------------------------------------------------------------+
+| Explain String                                                                     |
++------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=74.94MB                                  |
+| Per-Host Resource Estimates: Memory=4.08GB                                         |
+| WARNING: The following tables are missing relevant table and/or column statistics. |
+| default.partitionparquet                                                           |
+|                                                                                    |
+| PLAN-ROOT SINK                                                                     |
+| |                                                                                  |
+| 10:EXCHANGE [UNPARTITIONED]                                                        |
+| |                                                                                  |
+| 09:AGGREGATE [FINALIZE]                                                            |
+| |  output: count:merge(*)                                                          |
+| |  group by: a.myweekday                                                           |
+| |                                                                                  |
+| 08:EXCHANGE [HASH(a.myweekday)]                                                    |
+| |                                                                                  |
+| 05:AGGREGATE [STREAMING]                                                           |
+| |  output: count(*)                                                                |
+| |  group by: a.myweekday                                                           |
+| |                                                                                  |
+| 04:HASH JOIN [INNER JOIN, BROADCAST]                                               |
+| |  hash predicates: b.myrowid = c.myrowid                                          |
+| |  runtime filters: RF000 <- c.myrowid                                             |
+| |                                                                                  |
+| |--07:EXCHANGE [BROADCAST]                                                         |
+| |  |                                                                               |
+| |  02:SCAN HDFS [default.partitionparquet c]                                       |
+| |     partitions=84/84 files=84 size=8.17MB                                        |
+| |                                                                                  |
+| 03:HASH JOIN [INNER JOIN, BROADCAST]                                               |
+| |  hash predicates: a.myrowid = b.myrowid                                          |
+| |  runtime filters: RF002 <- b.myrowid                                             |
+| |                                                                                  |
+| |--06:EXCHANGE [BROADCAST]                                                         |
+| |  |                                                                               |
+| |  01:SCAN HDFS [default.partitionparquet b]                                       |
+| |     partitions=84/84 files=84 size=8.17MB                                        |
+| |     runtime filters: RF000 -> b.myrowid                                          |
+| |                                                                                  |
+| 00:SCAN HDFS [default.partitionparquet a]                                          |
+|    partitions=84/84 files=84 size=8.17MB                                           |
+|    predicates: a.myonein10k = 500                                                  |
+|    runtime filters: RF000 -> a.myrowid, RF002 -> a.myrowid                         |
++------------------------------------------------------------------------------------+
+Fetched 42 row(s) in 0.03s
+[gromit.lurie.biz:21000] > compute stats partitionparquet;
+Query: compute stats partitionparquet
++------------------------------------------+
+| summary                                  |
++------------------------------------------+
+| Updated 84 partition(s) and 4 column(s). |
++------------------------------------------+
+Fetched 1 row(s) in 1.63s
+[gromit.lurie.biz:21000] > explain  select a.myweekday, count(*) from partitionparquet a, partitionparquet b, partitionparquet c where a.myrowid=b.myrowid and b.myrowid=c.myrowid and  a.myonein10k=500 group by a.myweekday;
+Query: explain select a.myweekday, count(*) from partitionparquet a, partitionparquet b, partitionparquet c where a.myrowid=b.myrowid and b.myrowid=c.myrowid and  a.myonein10k=500 group by a.myweekday
++--------------------------------------------------+
+| Explain String                                   |
++--------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=9.81MB |
+| Per-Host Resource Estimates: Memory=89.88MB      |
+|                                                  |
+| PLAN-ROOT SINK                                   |
+| |                                                |
+| 10:EXCHANGE [UNPARTITIONED]                      |
+| |                                                |
+| 09:AGGREGATE [FINALIZE]                          |
+| |  output: count:merge(*)                        |
+| |  group by: a.myweekday                         |
+| |                                                |
+| 08:EXCHANGE [HASH(a.myweekday)]                  |
+| |                                                |
+| 05:AGGREGATE [STREAMING]                         |
+| |  output: count(*)                              |
+| |  group by: a.myweekday                         |
+| |                                                |
+| 04:HASH JOIN [INNER JOIN, BROADCAST]             |
+| |  hash predicates: c.myrowid = b.myrowid        |
+| |  runtime filters: RF000 <- b.myrowid           |
+| |                                                |
+| |--07:EXCHANGE [BROADCAST]                       |
+| |  |                                             |
+| |  03:HASH JOIN [INNER JOIN, BROADCAST]          |
+| |  |  hash predicates: b.myrowid = a.myrowid     |
+| |  |  runtime filters: RF002 <- a.myrowid        |
+| |  |                                             |
+| |  |--06:EXCHANGE [BROADCAST]                    |
+| |  |  |                                          |
+| |  |  00:SCAN HDFS [default.partitionparquet a]  |
+| |  |     partitions=84/84 files=84 size=8.17MB   |
+| |  |     predicates: a.myonein10k = 500          |
+| |  |                                             |
+| |  01:SCAN HDFS [default.partitionparquet b]     |
+| |     partitions=84/84 files=84 size=8.17MB      |
+| |     runtime filters: RF002 -> b.myrowid        |
+| |                                                |
+| 02:SCAN HDFS [default.partitionparquet c]        |
+|    partitions=84/84 files=84 size=8.17MB         |
+|    runtime filters: RF000 -> c.myrowid           |
++--------------------------------------------------+
+Fetched 40 row(s) in 0.06s
