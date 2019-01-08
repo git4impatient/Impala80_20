@@ -19,3 +19,5 @@ location '/user/marty/statsparqpart'
 
 select * from stage limit 10;
 select myonein10k from stage where mydayofyear=365 limit 5;
+select count(*) from stage;
+
