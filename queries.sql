@@ -3,6 +3,9 @@
 --  these are some sample queries, this file will get updated soon
 -- 
 select myweekday, count(*) from partitionparquet group by myweekday;
+
+select a.myweekday, count(*), sum (b.mydayofyear) 
+from partitionparquet a, partitionparquet b where a.myrowid=b.myrowid group by a.myweekday;
 select myweekday, ndv(myweekday) from partitionparquet group by myweekday;
 select myweekday, count(*) from partitionparquet group by myweekday;
 explain select myweekday, count(*) from partitionparquet group by myweekday;
