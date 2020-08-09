@@ -16,5 +16,10 @@ This github has a data generator and sample code.  It also includes analysis of 
 
 (c) Copyright 2018 Martin Lurie, sample code, not supported
 
-todo: add partitioning example, clean up the queries file, add screenshots of query tree showing difference in rows broadcast, partition elimiation etc
+Steps
+1 run the go script to create the data, push it to hdfs and create the stage table
+2 run impala-shell -f partitioning.ddl.sql to create a parquet table using compression
+3 run impala-shell -f kuduInsertSelect.sql   to experiment with Kudu, a parallel store with insert/update/delete 
+4 run impala-shell -f queries.sql 
+
 
