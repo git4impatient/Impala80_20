@@ -1,4 +1,4 @@
-
+ 
 # Impala80_20
 80% of Apache Impala performance from 20% of the tuning effort
 
