@@ -12,6 +12,10 @@ Four simple steps to get great Impala performance
 
 4 Partition your tables
 
+5 Make sure you don't have small files - this could be due to how the data is loaded, it could also be from being over partitioned
+
+Lots more info on Impala here:  https://www.youtube.com/watch?v=Hw354K9uFBo
+
 This github has a data generator and sample code.  It also includes analysis of how to see the impact of the above steps
 
 (c) Copyright 2018 Martin Lurie, sample code, not supported
