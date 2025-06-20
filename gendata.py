@@ -31,4 +31,4 @@ while n < lines:
            dayofyear=1
         if onein10k==10001:
            onein10k=1
-        print  str(n) + "|" + str(month) +"|" + str(weekday) +"|" + str(dayofyear) +"|"+ str(onein10k)+ "|" + mystring
+        print ( str(n) + "|" + str(month) +"|" + str(weekday) +"|" + str(dayofyear) +"|"+ str(onein10k)+ "|" + mystring)
